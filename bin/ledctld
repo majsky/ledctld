@@ -1,0 +1,3 @@
+#!/bin/sh
+LEDCTL_DIR="/home/majsky4/devel/rocks/leds"
+cd $LEDCTL_DIR/src && eval $(cd $LEDCTL_DIR && luarocks path --bin) && exec ledctld/main.lua $@
