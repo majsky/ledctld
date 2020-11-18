@@ -105,7 +105,7 @@ end
 function Serial:tick()
 --print(string.format("tick %d:%d", self.readport:in_queue()))
 
-    local tim = os.time()
+  --  local tim = os.time()
     self.msgBuff = self.msgBuff or {len = -1}
     local err, recieve, rlen = self.readport:read(150)
  --   print(err, recieve, rlen)
@@ -139,7 +139,7 @@ function Serial:tick()
         self.readport:close()
     end
 
-    print("Serial", os.difftime(os.time(), tim), "start", tim)
+--    print("Serial", os.difftime(os.time(), tim), "start", tim)
     return self.run
 end
 
