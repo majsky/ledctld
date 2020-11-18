@@ -38,9 +38,10 @@ else
     config = json.decode(config_string)
 end
 
-dctl.init(args.ctlport)
+--dctl.init(args.ctlport)
 local sp = Serial:new(args.comport, 23, config and config.color or nil)
 
+--[[
 dctl.registerHooks({
     uc = function(d)
         local clr
@@ -141,7 +142,7 @@ dctl.registerHooks({
         return {c=sp.uniformColor,b=sp.brightness}, 0
     end
 })
-
+]]
 
 
 local loop = Loop:new("main")
