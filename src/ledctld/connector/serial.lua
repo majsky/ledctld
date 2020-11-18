@@ -18,7 +18,7 @@ end
 
 function Serial:new(port_name, led_count, initial_values)
     local e, readport = rs232.open(port_name)
-    
+
     if e ~= rs232.RS232_ERR_NOERROR then
         error(rs232.error_tostring(e))
     end
@@ -29,15 +29,15 @@ function Serial:new(port_name, led_count, initial_values)
     assert(readport:set_stop_bits(rs232.RS232_STOP_1) == rs232.RS232_ERR_NOERROR)
     assert(readport:set_flow_control(rs232.RS232_FLOW_OFF)  == rs232.RS232_ERR_NOERROR)
 
-    local writePort = io.open(port_name,"w")
-    
-    assert(writePort ~= nil)
-    
+    --local writePort = io.open(port_name,"w")
+
+    --assert(writePort ~= nil)
+
     local o = {
         name = port_name,
         readport = readport,
         count = led_count,
-        writePort = writePort,
+      --  writePort = writePort,
         _wbuff = {}
     }
 
@@ -46,7 +46,7 @@ function Serial:new(port_name, led_count, initial_values)
             o[k] = v
         end
     end
-    
+
     return setmetatable(o, Serial.__meta)
 end
 
@@ -74,9 +74,13 @@ function Serial:send(data)
 end
 
 function Serial:flush()
-  self.writePort:setvbuf("no", 0)
-  self.writePort:write(table.concat(self._wbuff))
-  self.writePort:flush()
+  err, len_written = self.readport:write(table.concat(self._wbuff),10)
+  if err ~= rs232.RS232_ERR_NOERROR then
+    print(err)
+  end
+  --self.writePort:setvbuf("no", 0)
+  --self.writePort:write(table.concat(self._wbuff))
+  --self.writePort:flush()
   self._wbuff = {}
 end
 
@@ -94,16 +98,16 @@ function Serial:sendColors()
     end
     table.insert(data, 62)
     self:send(data)
-    
+
     self:flush()
 end
 
 function Serial:tick()
-print(string.format("tick %d:%d", self.readport:in_queue()))
-  
-    --local tim = os.time()
+--print(string.format("tick %d:%d", self.readport:in_queue()))
+
+    local tim = os.time()
     self.msgBuff = self.msgBuff or {len = -1}
-    local err, recieve, rlen = self.readport:read(15)
+    local err, recieve, rlen = self.readport:read(150)
  --   print(err, recieve, rlen)
 
     if err ~= rs232.RS232_ERR_NOERROR and err ~= 9 then
@@ -128,21 +132,21 @@ print(string.format("tick %d:%d", self.readport:in_queue()))
             self.msgBuff.len = self.msgBuff.len + 1
             table.insert(self.msgBuff.data, b)
         end
-    
+
     end
 
     if not self.run then
         self.readport:close()
     end
 
-    --print("Serial", os.difftime(os.time(), tim), "start", tim)
+    print("Serial", os.difftime(os.time(), tim), "start", tim)
     return self.run
 end
 
 function Serial:handle(msg)
     if msg == "live" then
         self:send("<a>"):flush()
-        
+
     elseif msg == "Arduino is ready" then
         cols = {}
         for i=1, 24 do
