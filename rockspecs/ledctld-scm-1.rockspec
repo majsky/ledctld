@@ -1,7 +1,7 @@
 package = "ledctld"
-version = "0.2-2"
+version = "scm-1"
 source = {
-   url = "git+https://github.com/majsky/ledctld.git",
+   url = "git+ssh://git@github.com:majsky/ledctld.git",
    branch = "dev"
 }
 description = {
