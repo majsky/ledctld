@@ -1,0 +1,17 @@
+#!/usr/bin/zsh
+mkdir -p .build/repo
+cd .build
+rm *.rock
+sshfs alarm@elektro-odpad.lan:/share/11-www/rocks repo    
+
+if [ ${#} -gt 0 ]; then 
+  for rs in $@; do
+    luarocks pack ../${rs}
+  done
+else
+  luarocks pack ../rockspecs/ledctld-scm-1.rockspec
+fi
+cp -f *.rock repo
+luarocks-admin make-manifest repo
+umount repo
+cd ..
