@@ -2,7 +2,7 @@ package = "ledctld"
 version = "0.2-1"
 
 source = {
-   url = "git+ssh://git@elektro-odpad.lan:repos/ledctld.git",
+   url = "git+ssh://git@github.com:majsky/ledctld.git",
    tag = "v0.2-1"
 }
 
